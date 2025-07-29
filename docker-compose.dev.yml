@@ -13,6 +13,7 @@ services:
       - USE_REDIS_CACHE=false
     volumes:
       - .:/app
+      # Configuração opcional - se config.env existir, será montado
       - ./config.env:/app/config.env:ro
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     restart: unless-stopped

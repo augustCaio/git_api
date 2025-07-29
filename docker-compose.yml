@@ -16,6 +16,7 @@ services:
     depends_on:
       - redis
     volumes:
+      # Configuração opcional - se config.env existir, será montado
       - ./config.env:/app/config.env:ro
     restart: unless-stopped
     healthcheck:

@@ -18,11 +18,14 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Copia arquivos de dependências
-COPY requirements.txt requirements-dev.txt ./
+COPY requirements.txt ./
 
 # Instala dependências Python
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
+
+# Cria arquivo de configuração padrão se não existir
+RUN if [ ! -f config.env ]; then cp config.env.example config.env 2>/dev/null || echo "Config file will be set via environment variables"; fi
 
 # Copia código da aplicação
 COPY . .
