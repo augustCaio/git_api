@@ -44,6 +44,10 @@ class Settings(BaseSettings):
     redis_password: Optional[str] = Field(default=None, alias="REDIS_PASSWORD")
     cache_ttl: int = Field(default=300, alias="CACHE_TTL")  # 5 minutos por padrão
     
+    # Configurações de CORS
+    cors_origins: list = Field(default=["*"], alias="CORS_ORIGINS")
+    allowed_hosts: list = Field(default=["*"], alias="ALLOWED_HOSTS")
+    
     model_config = ConfigDict(
         env_file="config.env",
         env_file_encoding="utf-8",
