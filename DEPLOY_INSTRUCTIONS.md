@@ -46,7 +46,7 @@ Este documento fornece instruções detalhadas para fazer deploy da GitHub Data 
 
 5. **Deploy Automático**
    - Render fará deploy automático
-   - URL será: `https://github-data-api.onrender.com`
+   - URL será: `https://git-api-i3y5.onrender.com`
 
 #### **Vantagens do Render**
 

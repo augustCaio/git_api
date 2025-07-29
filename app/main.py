@@ -67,7 +67,7 @@ Uma API completa para buscar dados do GitHub de forma eficiente e organizada.
     },
     servers=[
         {"url": "http://localhost:8000", "description": "Desenvolvimento local"},
-        {"url": "https://github-data-api.onrender.com", "description": "Produção (Render.com)"},
+        {"url": "https://git-api-i3y5.onrender.com", "description": "Produção (Render.com)"},
     ]
 )
 
@@ -111,7 +111,7 @@ def get_cors_origins():
     else:
         # Em produção, permite apenas origens específicas
         origins = [
-            "https://github-data-api.onrender.com",
+            "https://git-api-i3y5.onrender.com",
             "https://github.com",
             "https://gist.github.com",
             "https://raw.githubusercontent.com",

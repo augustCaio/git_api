@@ -46,7 +46,7 @@ async def get_user(
     ### 🔄 Uso
     
     ```bash
-    curl https://github-data-api.onrender.com/api/v1/users/octocat
+    curl https://git-api-i3y5.onrender.com/api/v1/users/octocat
     ```
     
     ### 📝 Exemplo de Resposta
@@ -388,7 +388,7 @@ async def health_check() -> dict:
     ### 🔄 Uso
     
     ```bash
-    curl https://github-data-api.onrender.com/api/v1/health
+    curl https://git-api-i3y5.onrender.com/api/v1/health
     ```
     
     ### 📝 Exemplo de Resposta
@@ -497,7 +497,7 @@ async def cache_stats() -> dict:
     ### 🔄 Uso
     
     ```bash
-    curl https://github-data-api.onrender.com/api/v1/cache/stats
+    curl https://git-api-i3y5.onrender.com/api/v1/cache/stats
     ```
     
     ### 📝 Exemplo de Resposta
@@ -535,7 +535,7 @@ async def clear_cache() -> dict:
     ### 🔄 Uso
     
     ```bash
-    curl -X DELETE https://github-data-api.onrender.com/api/v1/cache/clear
+    curl -X DELETE https://git-api-i3y5.onrender.com/api/v1/cache/clear
     ```
     
     ### 📝 Exemplo de Resposta
