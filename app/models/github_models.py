@@ -13,11 +13,11 @@ class GitHubUser(BaseModel):
     login: str
     name: Optional[str] = None
     email: Optional[str] = None
-    avatar_url: Optional[HttpUrl] = None
+    avatar_url: Optional[str] = None
     bio: Optional[str] = None
     location: Optional[str] = None
     company: Optional[str] = None
-    blog: Optional[HttpUrl] = None
+    blog: Optional[str] = None
     twitter_username: Optional[str] = None
     public_repos: int = 0
     public_gists: int = 0
