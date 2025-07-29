@@ -50,8 +50,8 @@ API REST completa para acessar dados do GitHub, desenvolvida com FastAPI e recur
 ### **1. Clone o Repositório**
 
 ```bash
-git clone https://github.com/seu-usuario/github-data-api.git
-cd github-data-api
+git clone https://github.com/augustCaio/git_api.git
+cd git_api
 ```
 
 ### **2. Configure o Ambiente**
@@ -377,9 +377,8 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 ## 📞 **Contato**
 
-- **GitHub**: [@seu-usuario](https://github.com/seu-usuario)
-- **Email**: seu-email@exemplo.com
-- **Projeto**: [GitHub Data API](https://github.com/seu-usuario/github-data-api)
+- **GitHub**: [@augustCaio](https://github.com/augustCaio)
+- **Projeto**: [GitHub Data API](https://github.com/augustCaio/git_api)
 
 ---
 

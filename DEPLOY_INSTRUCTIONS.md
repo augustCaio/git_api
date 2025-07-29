@@ -14,7 +14,7 @@ Este documento fornece instruções detalhadas para fazer deploy da GitHub Data 
 
    ```bash
    # Fork este repositório no GitHub
-   # https://github.com/seu-usuario/git-api
+   # https://github.com/augustCaio/git_api
    ```
 
 2. **Criar Conta no Render**
@@ -68,7 +68,7 @@ Este documento fornece instruções detalhadas para fazer deploy da GitHub Data 
 1. **Clone o Repositório**
 
    ```bash
-   git clone https://github.com/seu-usuario/git-api.git
+   git clone https://github.com/augustCaio/git_api.git
    cd git-api
    ```
 

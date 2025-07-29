@@ -58,8 +58,7 @@ Uma API completa para buscar dados do GitHub de forma eficiente e organizada.
     openapi_url="/openapi.json",
     contact={
         "name": "GitHub Data API",
-        "url": "https://github.com/seu-usuario/git-api",
-        "email": "seu-email@exemplo.com",
+        "url": "https://github.com/augustCaio/git_api",
     },
     license_info={
         "name": "MIT",
