@@ -84,7 +84,7 @@ async def get_user(
         raise HTTPException(status_code=404, detail=f"Usuário {username} não encontrado: {str(e)}")
 
 
-@router.get("/users/{username}/repositories", response_model=List[GitHubRepository], summary="Obter repositórios do usuário", tags=["Usuários"])
+@router.get("/users/{username}/repositories", response_model=List[GitHubRepository], summary="Obter todos os repositórios do usuário", tags=["Usuários"])
 async def get_user_repositories(
     username: str,
     page: int = Query(1, ge=1, description="Número da página"),
@@ -92,20 +92,270 @@ async def get_user_repositories(
     client: GitHubClient = Depends(get_github_client)
 ) -> List[GitHubRepository]:
     """
-    Obtém repositórios de um usuário do GitHub.
+    ## 📚 Todos os Repositórios do Usuário
+    
+    Obtém **todos os repositórios** de um usuário do GitHub, incluindo:
+    
+    - ✅ **Repositórios públicos** (visíveis para todos)
+    - ✅ **Repositórios privados** (se você tiver acesso)
+    - ✅ **Repositórios forkados** (criados a partir de outros)
+    - ✅ **Repositórios originais** (criados pelo usuário)
+    
+    ### 📊 Dados Retornados
+    
+    Para cada repositório:
+    - **Informações básicas**: Nome, descrição, linguagem principal
+    - **Estatísticas**: Stars, forks, issues, watchers
+    - **Configurações**: Privado/público, fork, arquivado
+    - **Metadados**: Data de criação, última atualização, tamanho
+    - **Links**: URL do repositório, homepage, documentação
+    
+    ### 🔄 Uso
+    
+    ```bash
+    # Todos os repositórios (primeira página)
+    curl https://git-api-i3y5.onrender.com/api/v1/users/augustcaio/repositories
+    
+    # Com paginação
+    curl https://git-api-i3y5.onrender.com/api/v1/users/augustcaio/repositories?page=1&per_page=50
+    
+    # Máximo de repositórios por página
+    curl https://git-api-i3y5.onrender.com/api/v1/users/augustcaio/repositories?per_page=100
+    ```
+    
+    ### 📝 Exemplo de Resposta
+    
+    ```json
+    [
+      {
+        "id": 1031918183,
+        "name": "portfolio-2025",
+        "full_name": "augustcaio/portfolio-2025",
+        "description": "Meu portfólio pessoal 2025",
+        "private": false,
+        "fork": false,
+        "language": "TypeScript",
+        "size": 1024,
+        "stargazers_count": 5,
+        "watchers_count": 5,
+        "forks_count": 2,
+        "open_issues_count": 1,
+        "default_branch": "main",
+        "created_at": "2025-01-15T10:30:00Z",
+        "updated_at": "2025-07-29T16:00:00Z"
+      },
+      {
+        "id": 1028484319,
+        "name": "git_api",
+        "full_name": "augustcaio/git_api",
+        "description": "API para dados do GitHub",
+        "private": false,
+        "fork": false,
+        "language": "Python",
+        "size": 2048,
+        "stargazers_count": 10,
+        "watchers_count": 10,
+        "forks_count": 3,
+        "open_issues_count": 0,
+        "default_branch": "main",
+        "created_at": "2025-01-10T14:20:00Z",
+        "updated_at": "2025-07-29T15:30:00Z"
+      }
+    ]
+    ```
+    
+    ### ⚙️ Parâmetros
+    
+    - **username** (obrigatório): Nome do usuário no GitHub
+    - **page** (opcional): Número da página (padrão: 1)
+    - **per_page** (opcional): Itens por página (padrão: 30, máximo: 100)
+    
+    ### ⚠️ Limitações
+    
+    - **Rate limit**: 60 requisições/hora (sem token) / 5000 requisições/hora (com token)
+    - **Cache**: Dados em cache por 10 minutos para melhor performance
+    - **Repositórios privados**: Só aparecem se você tiver acesso (com token)
+    - **Ordenação**: Repositórios ordenados por data de atualização (mais recentes primeiro)
+    
+    ### 🔗 Endpoints Relacionados
+    
+    - `GET /users/{username}` - Dados do usuário
+    - `GET /users/{username}/languages` - Linguagens mais usadas
+    - `GET /users/{username}/stats` - Estatísticas completas
+    - `GET /repos/{owner}/{repo}` - Dados de um repositório específico
     
     Args:
-        username: Nome do usuário no GitHub
-        page: Número da página (padrão: 1)
-        per_page: Itens por página (padrão: 30, máximo: 100)
+        username (str): Nome do usuário no GitHub
+        page (int): Número da página (padrão: 1)
+        per_page (int): Itens por página (padrão: 30, máximo: 100)
         
     Returns:
-        Lista de repositórios do usuário
+        List[GitHubRepository]: Lista completa de repositórios do usuário
     """
     try:
         return await client.get_user_repositories(username, page, per_page)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erro ao buscar repositórios: {str(e)}")
+
+
+@router.get("/users/{username}/repositories/summary", summary="Resumo de todos os repositórios do usuário", tags=["Usuários"])
+async def get_user_repositories_summary(
+    username: str,
+    client: GitHubClient = Depends(get_github_client)
+) -> dict:
+    """
+    ## 📊 Resumo Completo dos Repositórios
+    
+    Obtém um **resumo estatístico** de todos os repositórios de um usuário, incluindo:
+    
+    - 📈 **Estatísticas gerais**: Total de repositórios, stars, forks
+    - 🗣️ **Linguagens mais usadas**: Ranking das linguagens de programação
+    - 📅 **Atividade recente**: Repositórios mais atualizados
+    - ⭐ **Repositórios populares**: Com mais stars e forks
+    - 🔒 **Visibilidade**: Distribuição entre públicos e privados
+    
+    ### 📊 Dados Retornados
+    
+    ```json
+    {
+      "username": "augustcaio",
+      "summary": {
+        "total_repositories": 5,
+        "public_repositories": 4,
+        "private_repositories": 1,
+        "total_stars": 25,
+        "total_forks": 8,
+        "total_watchers": 30,
+        "total_size": 10240
+      },
+      "languages": {
+        "Python": {"count": 2, "percentage": 40.0},
+        "TypeScript": {"count": 1, "percentage": 20.0},
+        "JavaScript": {"count": 1, "percentage": 20.0}
+      },
+      "top_repositories": [
+        {
+          "name": "git_api",
+          "stars": 10,
+          "forks": 3,
+          "language": "Python"
+        }
+      ],
+      "recent_activity": [
+        {
+          "name": "portfolio-2025",
+          "updated_at": "2025-07-29T16:00:00Z",
+          "language": "TypeScript"
+        }
+      ]
+    }
+    ```
+    
+    ### 🔄 Uso
+    
+    ```bash
+    curl https://git-api-i3y5.onrender.com/api/v1/users/augustcaio/repositories/summary
+    ```
+    
+    ### ⚠️ Limitações
+    
+    - **Rate limit**: 60 requisições/hora (sem token) / 5000 requisições/hora (com token)
+    - **Cache**: Dados em cache por 15 minutos para melhor performance
+    - **Repositórios privados**: Só aparecem se você tiver acesso (com token)
+    
+    Args:
+        username (str): Nome do usuário no GitHub
+        
+    Returns:
+        dict: Resumo estatístico completo dos repositórios
+    """
+    try:
+        # Obtém todos os repositórios (máximo 100 por página)
+        all_repos = await client.get_user_repositories(username, page=1, per_page=100)
+        
+        if not all_repos:
+            return {
+                "username": username,
+                "summary": {
+                    "total_repositories": 0,
+                    "public_repositories": 0,
+                    "private_repositories": 0,
+                    "total_stars": 0,
+                    "total_forks": 0,
+                    "total_watchers": 0,
+                    "total_size": 0
+                },
+                "languages": {},
+                "top_repositories": [],
+                "recent_activity": []
+            }
+        
+        # Calcula estatísticas
+        total_repos = len(all_repos)
+        public_repos = len([r for r in all_repos if not r.private])
+        private_repos = len([r for r in all_repos if r.private])
+        total_stars = sum(r.stargazers_count for r in all_repos)
+        total_forks = sum(r.forks_count for r in all_repos)
+        total_watchers = sum(r.watchers_count for r in all_repos)
+        total_size = sum(r.size for r in all_repos)
+        
+        # Análise de linguagens
+        languages = {}
+        for repo in all_repos:
+            if repo.language:
+                if repo.language not in languages:
+                    languages[repo.language] = {"count": 0, "percentage": 0}
+                languages[repo.language]["count"] += 1
+        
+        # Calcula porcentagens
+        for lang in languages:
+            languages[lang]["percentage"] = (languages[lang]["count"] / total_repos) * 100
+        
+        # Top repositórios (por stars)
+        top_repos = sorted(all_repos, key=lambda x: x.stargazers_count, reverse=True)[:5]
+        top_repos_data = [
+            {
+                "name": repo.name,
+                "full_name": repo.full_name,
+                "stars": repo.stargazers_count,
+                "forks": repo.forks_count,
+                "language": repo.language,
+                "description": repo.description
+            }
+            for repo in top_repos
+        ]
+        
+        # Atividade recente
+        recent_repos = sorted(all_repos, key=lambda x: x.updated_at or datetime.min, reverse=True)[:5]
+        recent_activity = [
+            {
+                "name": repo.name,
+                "full_name": repo.full_name,
+                "updated_at": repo.updated_at.isoformat() if repo.updated_at else None,
+                "language": repo.language,
+                "description": repo.description
+            }
+            for repo in recent_repos
+        ]
+        
+        return {
+            "username": username,
+            "summary": {
+                "total_repositories": total_repos,
+                "public_repositories": public_repos,
+                "private_repositories": private_repos,
+                "total_stars": total_stars,
+                "total_forks": total_forks,
+                "total_watchers": total_watchers,
+                "total_size": total_size
+            },
+            "languages": languages,
+            "top_repositories": top_repos_data,
+            "recent_activity": recent_activity
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Erro ao buscar resumo dos repositórios: {str(e)}")
 
 
 @router.get("/users/{username}/languages", summary="Obter linguagens do usuário", tags=["Usuários"])
